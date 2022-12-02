@@ -1,18 +1,14 @@
-const {readFile} = require('fs').promises;
-const path = require('path');
+const {readFileSync} = require('fs');
 
-async function solve() {
+function solve() {
   // read file
-  const contents = await readFile(
-    path.join(__dirname, 'input.txt'),
-    { encoding: 'utf8' }
-    );
+  const contents = readFileSync('input.txt', 'utf-8');
   const array = contents.split('\n');
 
-  // preview data
-  // for (let i = 0; i < 15; i++) {
-  //   console.log(array[i]);
-  // }
+  //preview data
+  for (let i = 0; i < 15; i++) {
+    console.log(array[i]);
+  }
 
   // add total calories to a sorted array
   let elves = [];
