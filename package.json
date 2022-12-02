@@ -1,0 +1,25 @@
+{
+  "name": "advent22",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Laurie-Multiverse/advent22.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Laurie-Multiverse/advent22/issues"
+  },
+  "homepage": "https://github.com/Laurie-Multiverse/advent22#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "node": "^19.2.0",
+    "path": "^0.12.7"
+  }
+}
