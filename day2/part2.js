@@ -2,56 +2,52 @@ const {readFile} = require('fs').promises;
 const path = require('path');
 
 async function solve() {
-  // read file
+  // read file. 
+  //  given input.txt in the current directory
+  //  result is an array of strings, 1 per line, no newline chars
   const contents = await readFile(
     path.join(__dirname, 'input.txt'),
     { encoding: 'utf8' }
     );
-  const array = contents.split('\n');
+  const array = contents.split('\r\n');
 
-  // preview data
-  // for (let i = 0; i < 15; i++) {
-  //   console.log(array[i]);
-  // }
-
-  // 2 beats 1, 3 beats 2, 1 beats 3
-  // to win: if 1, pick 2. if 2, pick 3. if 3, pick 1.
-  //    so, pick OPP + 1, and if OPP = 4 then go back to 1
-  // to lose: if 1, pick 3. if 2, pick 1. if 3, pick 2.
+  // cumulatively calculate overall score
   let score = 0;
 
   const opponentPlays = { 'A': 1, 'B': 2, 'C': 3};
-  // const mePlays = {'X': 1, 'Y': 2, 'Z': 3};
+  const meScore = {'X': 0, 'Y': 3, 'Z': 6};
 
   // console.log(mePlays['X']);
   // play entire game
   for (let i = 0; i < array.length; i++) {
-    let oppIndex = array[i][0];
-    let me = array[i][2];
-    // console.log(`opp:${oppIndex}, me:${me}`);
-    let opp = opponentPlays[oppIndex];
-    let move = -1;
+    let oppIndex = array[i][0];         // 'A', 'B', or 'C'
+    let me = array[i][2];               // 'X', 'Y', or 'Z'
+    let opp = opponentPlays[oppIndex];  // 1, 2, or 3
+
+    // add lose, draw or win score based on X, Y, Z
+    score += meScore[me];
 
     // choose my move based on X, Y, Z:
-    if (me == 'X') { // lose
-      score += 0;
-      move = opp - 1;
-      if (move == 0) move = 3;
-    } else if (me == 'Y') { // draw
-      score += 3;
-      move = opp;
-    } else if (me == 'Z') { // win
-      score += 6;
-      move = opp + 1;
-      if (move == 4) move = 1;
+    let move = -1;
+    switch(me) {
+      case 'X':           // lose. 1->3, 2->1, 3->2.
+        move = opp - 1;
+        if (move == 0) move = 3;
+        break;
+      case 'Y':           // draw
+        move = opp;
+        break;
+      case 'Z':           // win. 1->2, 2->3, 3->1.
+        move = opp % 3 + 1;
+        break;
+      default:
+        console.log("ERROR IN DATA");
+        break;
     }
-    // console.log(move, score);
     score += move;
 
   }
-  console.log(score);
-
-  
+  console.log(score);  
 }
 
 solve();
