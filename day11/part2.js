@@ -21,53 +21,41 @@ async function solve() {
   //   ifFalse: monkey #
   const monkeys = [];
 
+  // helper functions
+
   const getOp = op => (op == 'old' ? item : Number(op));
 
-  // take a turn
-  const turn = monkey => {
-    // inspect and throw each item
-    const numItems = monkey.items.length;
-    for (let i = 0; i < numItems; i++) {
-      item = monkey.items[i];
-      // console.log(` item has worry level ${item}`);
-      // adjust worry level
-
-      const op = getOp(monkey.operand);
-      if (monkey.operation == '*') {
-        item *= op;
-        // console.log(item, '*', op);
-      } else if (monkey.operation == '+') {
-        item += op;
-        // console.log(item, '+', op);
-      } else {
-        error("unknown operation");
-      }
-      // console.log(` worry level changed to ${item}`)
-      // inspect item
-      monkey.inspectCount++;
-
-      // divisibility test
-      let newMonkeyIndex;
-      if (item % monkey.factor == 0) {
-        // console.log(`  divisible by ${monkey.factor}`)
-        newMonkeyIndex = monkey.ifTrue;
-      } else {
-        // console.log(`  not divisible by ${monkey.factor}`)
-        newMonkeyIndex = monkey.ifFalse;
-      }
-      // console.log(`  thrown to monkey ${newMonkeyIndex}`);
-      item %= magic;
-      monkeys[newMonkeyIndex].items.push(item);
-    }
-    // remove the items we processed
-    monkey.items.splice(0, numItems);
+  const adjustWorry = (monkey, item) => {
+    const op = getOp(monkey.operand);
+    if (monkey.operation == '*') {
+      return item * op;
+    } else if (monkey.operation == '+') {
+      return item + op;
+    } else {
+      console.error("unknown operation");
+    } 
   }
 
-  // execute a round
-  const round = () => {
-    for (let i = 0; i < monkeys.length; i++) {
-      turn(monkeys[i]);
+  const throwItem = (monkey, item) => {
+    let newMonkeyIndex;
+    if (item % monkey.factor == 0) {
+      newMonkeyIndex = monkey.ifTrue;
+    } else {
+      newMonkeyIndex = monkey.ifFalse;
     }
+    monkeys[newMonkeyIndex].items.push(item);
+  }
+
+  const turn = monkey => {
+    const numItems = monkey.items.length;
+    for (let i = 0; i < numItems; i++) {
+      item = monkey.items[i];            // get worry level
+      item = adjustWorry(monkey, item);
+      monkey.inspectCount++;
+      item %= magic;                     // reduce but equivalent
+      throwItem(monkey, item);
+    }
+    monkey.items.splice(0, numItems);    // remove the items we processed
   }
 
   let magic = 1;
