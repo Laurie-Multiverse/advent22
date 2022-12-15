@@ -18,6 +18,12 @@ async function solve() {
     readPath(line);
   }
 
+  // add an infinite floor for part2
+  rock.push({
+    start: {x: -10000, y: lowestRock + 2},
+    end: {x: 100000, y: lowestRock + 2}
+  });
+
   // parse a line such as '498,4 -> 498,6 -> 496,6'
   //  and store it as paths in rock
   //  each path is {start:{x,y} end:{x,y}}
@@ -48,15 +54,16 @@ async function solve() {
     }
   }
 
+
+
   // drop one piece of sand until it stops
   //  returns false if the sand didn't move anywhere (still at 500, 0)
   function dropSand() {
     let pos = { x: 500, y: 0 };
+    let moved = false;
 
     // move down as far as possible
     while (pos) {
-      if (pos.y > lowestRock) return false;                 // below the rock
-
       const y = pos.y + 1;
       let nextPos = moveTo({ x: pos.x, y });                // try straight down
       if (!nextPos) nextPos = moveTo({ x: pos.x - 1, y });  // try down-and-left
@@ -64,10 +71,11 @@ async function solve() {
       if (!nextPos) break;                                  // at rest
 
       pos = nextPos;                                        // try to move some more
+      moved = true;
     }
-    if (pos.x == 500 && pos.y == 0) return false;           // didn't move at all
+
     addToSandPile(pos);
-    return true;
+    return moved;
   }
 
   // try to move to a position; returns new pos (or false if couldn't move)
@@ -84,6 +92,8 @@ async function solve() {
     grainCount++;
   }
 
+
+  // is position in rock?
   // does given position lie in the rock?
   function inRock(pos) {
     for (const path of rock) {
@@ -109,9 +119,10 @@ async function solve() {
     return sand[key].includes(pos.x);       // no sand at this position
   }
 
+
   // drop all the sand
   dropAllSand();
-
+  
   console.log(`grains of sand: ${grainCount}`); // 367, 368 too low
 }
 
