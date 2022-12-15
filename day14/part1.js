@@ -62,8 +62,6 @@ async function solve() {
 
     // move down as far as possible
     while (pos) {
-      if (pos.y == 31 || pos.y == 32) DEBUG = true;
-      else DEBUG = false;
       // if we have dropped below the rock, we're done
       if (pos.y > lowestRock) {
         return false;
